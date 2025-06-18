@@ -2,9 +2,9 @@
   "name": "coffee-shop-api",
   "version": "1.0.0",
   "description": "API para la aplicación Coffee Shop",
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node server-test.js",
+    "start": "node app.js",
     "dev": "nodemon server.js",
     "test": "jest"
   },

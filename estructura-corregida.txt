@@ -1,0 +1,12 @@
+coffee-shop-api/
+├── controllers/              # Controladores de la API
+├── middleware/               # Middleware (auth, etc.)
+├── models/                   # Modelos de datos
+├── routes/                   # Rutas de la API
+├── services/                 # Servicios (notificaciones, etc.)
+├── utils/                    # Utilidades
+├── .env                      # Variables de entorno
+├── .gitignore                # Archivos ignorados
+├── package.json              # Dependencias
+├── server.js                 # Punto de entrada
+└── README.md                 # Documentación

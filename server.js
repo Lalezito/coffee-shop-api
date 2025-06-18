@@ -52,10 +52,21 @@ connectDB();
 
 // Ruta de estado del API
 app.get('/api/status', (req, res) => {
+  const services = {
+    stripe: !!process.env.STRIPE_SECRET_KEY,
+    mongodb: !!process.env.MONGODB_URI,
+    clerk: !!process.env.CLERK_SECRET_KEY,
+    sentry: !!process.env.SENTRY_DSN,
+    onesignal: !!process.env.ONESIGNAL_APP_ID
+  };
+
   res.status(200).json({
     status: 'online',
     environment: process.env.NODE_ENV || 'development',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    services,
+    port: process.env.PORT || 3000,
+    version: '1.0.0'
   });
 });
 

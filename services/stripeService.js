@@ -1,10 +1,34 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// Inicializar Stripe solo si hay clave disponible
+let stripe = null;
+if (process.env.STRIPE_SECRET_KEY) {
+  stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+} else {
+  console.warn('⚠️ STRIPE_SECRET_KEY no configurada. Servicios de pago deshabilitados.');
+}
+
 const Payment = require('../models/payment.model');
 
 /**
  * Servicio para manejar operaciones relacionadas con Stripe
  */
 class StripeService {
+  /**
+   * Verifica si Stripe está disponible
+   * @returns {Boolean} True si Stripe está configurado
+   */
+  isStripeAvailable() {
+    return stripe !== null;
+  }
+
+  /**
+   * Valida que Stripe esté disponible antes de ejecutar operaciones
+   * @throws {Error} Si Stripe no está configurado
+   */
+  _validateStripeAvailable() {
+    if (!this.isStripeAvailable()) {
+      throw new Error('Stripe no está configurado. Configure STRIPE_SECRET_KEY en las variables de entorno.');
+    }
+  }
   /**
    * Crea un cliente de Stripe para un usuario
    * @param {Object} userData - Datos del usuario
@@ -14,6 +38,7 @@ class StripeService {
    */
   async createCustomer(userData) {
     try {
+      this._validateStripeAvailable();
       const { email, name } = userData;
 
       const customer = await stripe.customers.create({

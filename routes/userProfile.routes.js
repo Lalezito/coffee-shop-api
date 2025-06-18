@@ -61,4 +61,33 @@ router.get('/', authenticate, (req, res) => {
   }
 });
 
+// Ruta para obtener usuario específico por ID (compatibilidad con Flutter)
+router.get('/:userId', (req, res) => {
+  try {
+    const userId = req.params.userId;
+    
+    res.status(200).json({
+      success: true,
+      data: {
+        userId: userId,
+        name: 'Usuario Ejemplo',
+        email: 'usuario@ejemplo.com',
+        role: 'customer',
+        preferences: {
+          favoriteProducts: [],
+          notificationsEnabled: true,
+          emailNotifications: true
+        },
+        memberSince: new Date().toISOString().split('T')[0]
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error al obtener usuario',
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;

@@ -71,6 +71,7 @@ const couponRoutes = require('./routes/coupon.routes');
 const allergenRoutes = require('./routes/allergen.routes');
 const flavorProfileRoutes = require('./routes/flavor_profile.routes');
 const userProfileRoutes = require('./routes/userProfile.routes');
+const cartRoutes = require('./routes/cartRoutes');
 const experimentRoutes = require('./routes/experiment.routes');
 const segmentRoutes = require('./routes/segment.routes');
 const webhookRoutes = require('./routes/webhook.routes');
@@ -89,6 +90,8 @@ app.use('/api/coupons', couponRoutes);
 app.use('/api/allergens', allergenRoutes);
 app.use('/api/flavor-profiles', flavorProfileRoutes);
 app.use('/api/user-profiles', userProfileRoutes);
+app.use('/api/users', userProfileRoutes); // Alias para compatibilidad con Flutter
+app.use('/api/cart', cartRoutes);
 app.use('/api/experiments', experimentRoutes);
 app.use('/api/segments', segmentRoutes);
 app.use('/api/webhooks', webhookRoutes);

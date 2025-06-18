@@ -2,10 +2,10 @@
 const express = require('express');
 const router = express.Router();
 const cartController = require('../controllers/cartController');
-const authenticate = require('../middleware/authenticate');
+const { authenticate } = require('../middleware/auth.middleware');
 
 // Aplicar middleware de autenticación a todas las rutas
-router.use(authenticate.verifyToken);
+router.use(authenticate);
 
 // Obtener el carrito del usuario
 router.get('/:userId', cartController.getCart);

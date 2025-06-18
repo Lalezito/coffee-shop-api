@@ -1,5 +1,11 @@
 // services/apple-pay.service.js
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// Inicializar Stripe solo si hay clave disponible
+let stripe = null;
+if (process.env.STRIPE_SECRET_KEY) {
+  stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+} else {
+  console.warn('⚠️ STRIPE_SECRET_KEY no configurada. Servicios de Apple Pay deshabilitados.');
+}
 
 let Sentry;
 try {
@@ -13,12 +19,31 @@ try {
 
 class ApplePayService {
   /**
+   * Verifica si Stripe está disponible
+   * @returns {Boolean} True si Stripe está configurado
+   */
+  isStripeAvailable() {
+    return stripe !== null;
+  }
+
+  /**
+   * Valida que Stripe esté disponible antes de ejecutar operaciones
+   * @throws {Error} Si Stripe no está configurado
+   */
+  _validateStripeAvailable() {
+    if (!this.isStripeAvailable()) {
+      throw new Error('Stripe no está configurado. Configure STRIPE_SECRET_KEY en las variables de entorno.');
+    }
+  }
+
+  /**
    * Verifica si Apple Pay está soportado para un dominio específico
    * @param {String} domain - Dominio a verificar
    * @returns {Object} - Resultado de la verificación
    */
   async verifyDomain(domain) {
     try {
+      this._validateStripeAvailable();
       // TODO: IMPLEMENTAR REALMENTE - Verificar el dominio con Apple Pay a través de Stripe
       // En una implementación real, se registraría el dominio con Stripe para Apple Pay
       const isVerified = true;
@@ -44,6 +69,7 @@ class ApplePayService {
    */
   async processPayment(paymentData) {
     try {
+      this._validateStripeAvailable();
       const { amount, currency, orderId, token, customerId } = paymentData;
       
       // TODO: IMPLEMENTAR REALMENTE - Usar token de Apple Pay para crear un PaymentIntent en Stripe

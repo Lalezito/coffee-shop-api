@@ -1,4 +1,10 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// Inicializar Stripe solo si hay clave disponible
+let stripe = null;
+if (process.env.STRIPE_SECRET_KEY) {
+  stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+} else {
+  console.warn('⚠️ STRIPE_SECRET_KEY no configurada. Servicios de pago deshabilitados.');
+}
 let Sentry;
 try {
   Sentry = require('@sentry/node');
@@ -12,12 +18,31 @@ try {
 
 class StripeService {
   /**
+   * Verifica si Stripe está disponible
+   * @returns {Boolean} True si Stripe está configurado
+   */
+  isStripeAvailable() {
+    return stripe !== null;
+  }
+
+  /**
+   * Valida que Stripe esté disponible antes de ejecutar operaciones
+   * @throws {Error} Si Stripe no está configurado
+   */
+  _validateStripeAvailable() {
+    if (!this.isStripeAvailable()) {
+      throw new Error('Stripe no está configurado. Configure STRIPE_SECRET_KEY en las variables de entorno.');
+    }
+  }
+
+  /**
    * Crear un cliente en Stripe o recuperar uno existente
    * @param {Object} userData - Datos del usuario
    * @returns {Object} - Cliente de Stripe
    */
   async createCustomer(userData) {
     try {
+      this._validateStripeAvailable();
       const { email, name, userId, phone, metadata = {} } = userData;
       
       // Verificar si ya existe un cliente con este email o userId

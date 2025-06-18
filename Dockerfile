@@ -13,13 +13,13 @@ RUN npm ci --only=production && npm cache clean --force
 # Copiar el código fuente
 COPY . .
 
-# Copiar y hacer ejecutable el script de inicio
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
-
 # Crear usuario no-root para seguridad
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nextjs -u 1001
+
+# Copiar y hacer ejecutable el script de inicio
+COPY start.sh /start.sh
+RUN chmod +x /start.sh && chown nextjs:nodejs /start.sh
 
 # Cambiar propietario de archivos
 RUN chown -R nextjs:nodejs /app
